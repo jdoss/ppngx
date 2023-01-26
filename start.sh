@@ -5,12 +5,15 @@ set -e
 PAPERLESS_PORT=8000
 PAPERLESS_UID=1000
 PAPERLESS_GID=1000
+PAPERLESS_VERSION=latest
+PAPERLESS_TIME_ZONE=America/Chicago
+PAPERLESS_OCR_LANGUAGE=eng
 
 SFTPGO_SFTP_PORT=2022
 SFTPGO_HTTP_PORT=8022
 SFTPGO_ADMIN_USER=sftpadmin
 SFTPGO_ADMIN_PASSWORD=supersecret
-SFTPGO_PAPERLESS_USER=myscanner
+SFTPGO_PAPERLESS_USER=scanner
 SFTPGO_PAPERLESS_PASSWORD=anothersupersecret
 
 PAPERLESS_SECRET_KEY=chamgemechamgemechamgemechamgemechamgemechamgemechamgemechamgeme
@@ -85,13 +88,13 @@ podman create --replace --pod paperless \
   -e USERMAP_UID=${PAPERLESS_UID} \
   -e USERMAP_GID=${PAPERLESS_GID} \
   -e PAPERLESS_SECRET_KEY=${PAPERLESS_SECRET_KEY} \
-  -e PAPERLESS_TIME_ZONE=America/Chicago \
-  -e PAPERLESS_OCR_LANGUAGE=eng \
+  -e PAPERLESS_TIME_ZONE=${PAPERLESS_TIME_ZONE} \
+  -e PAPERLESS_OCR_LANGUAGE=${PAPERLESS_OCR_LANGUAGE} \
   -v paperless-data:/usr/src/paperless/data:Z \
   -v paperless-media:/usr/src/paperless/media:Z \
   -v paperless-consume:/usr/src/paperless/consume:U,z \
   -v ${PWD}/export:/usr/src/paperless/export:U,Z \
-  ghcr.io/paperless-ngx/paperless-ngx:latest
+  ghcr.io/paperless-ngx/paperless-ngx:${PAPERLESS_VERSION}
 podman start paperless-webserver
 
 echo "Starting SFTPGo..."
