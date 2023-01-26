@@ -11,8 +11,8 @@ https://github.com/quickvm/fcos-layer-paperless-ngx
 ## Setup
 
 1. Clone this repository
-1. `cd ppngx`
-1. Edit `start.sh` and customize at least these variables:
+2. `cd ppngx`
+3. Edit `start.sh` and customize at least these variables:
   ```
   PAPERLESS_TIME_ZONE=America/Chicago
   PAPERLESS_OCR_LANGUAGE=eng
@@ -20,13 +20,13 @@ https://github.com/quickvm/fcos-layer-paperless-ngx
   SFTPGO_PAPERLESS_PASSWORD=anothersupersecret
   PAPERLESS_SECRET_KEY=chamgemechamgemechamgemechamgemechamgemechamgemechamgemechamgeme
   ```
-1. Run `./start.sh`
-1. Wait a bit and make sure http://localhost:8000 is loading paperless.
-1. Add a superuser to paperless-ngx with:
+4. Run `./start.sh`
+5. Wait a bit and make sure http://localhost:8000 is loading paperless.
+6. Add a superuser to paperless-ngx with:
   ```
   podman exec -it paperless-webserver python manage.py createsuperuser
   ```
-1. If you are going to send documents via SFTP use the `scanner` and password set in `SFTPGO_PAPERLESS_PASSWORD`. Some scanners need the RSA Public key from SFTPGo. It is output by the script and written out to a file `${PWD}/sftp_rsa_host_key.pub`
+7. If you are going to send documents via SFTP use the `scanner` and password set in `SFTPGO_PAPERLESS_PASSWORD`. Some scanners need the RSA Public key from SFTPGo. It is output by the script and written out to a file `${PWD}/sftp_rsa_host_key.pub`
 
 ### Autostart with systemd
 
