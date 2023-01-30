@@ -9,7 +9,7 @@ If you want to have a VM runs Paperless-ngx, check out my other project which ca
 https://github.com/quickvm/fcos-layer-paperless-ngx
 
 ## Setup
-
+0. Ensure `jq` and `podman` packages are installed (ex `dnf install jq podman`)
 1. Clone this repository
 2. `cd ppngx`
 3. Edit `start.sh` and customize at least these variables:
@@ -19,6 +19,7 @@ https://github.com/quickvm/fcos-layer-paperless-ngx
   SFTPGO_ADMIN_PASSWORD=supersecret
   SFTPGO_PAPERLESS_PASSWORD=anothersupersecret
   PAPERLESS_SECRET_KEY=chamgemechamgemechamgemechamgemechamgemechamgemechamgemechamgeme
+  POSTGRESQL_PASSWORD=paperlesschangeme
   ```
 4. Run `./start.sh`
 5. Wait a bit and make sure http://localhost:8000 is loading paperless.
