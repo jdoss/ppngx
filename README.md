@@ -35,6 +35,7 @@ https://github.com/quickvm/fcos-layer-paperless-ngx
 The script by default assumes you are going to run this as a rootless user. Run `loginctl enable-linger $USER` so the systemd user instance can be started at boot and kept running even after the user logs out.
 
 1. Make sure Paperless-ngx is running via `start.sh`
+1. If it doesn't already exist: `mkdir -p ${HOME}/.config/systemd/user`
 1. `cd ${HOME}/.config/systemd/user`
 1. `podman generate systemd --new --files --container-prefix='' --name paperless`
 1. `systemctl daemon-reload --user`
