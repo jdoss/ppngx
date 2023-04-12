@@ -29,6 +29,13 @@ https://github.com/quickvm/fcos-layer-paperless-ngx
   ```
 7. If you are going to send documents via SFTP use the `scanner` and password set in `SFTPGO_PAPERLESS_PASSWORD`. Some scanners need the RSA Public key from SFTPGo. It is output by the script and written out to a file `${PWD}/sftp_rsa_host_key.pub`
 
+## Updating
+The most straightforward methodology is to pull the latest image you care about and re-run start.sh. For example:
+  ```
+  podman pull ghcr.io/paperless-ngx/paperless-ngx:latest
+  ./start.sh
+  ```
+This will pull the latest image, and assuming your `PAPERLESS_VERSION` specified in start.sh is `latest`, will rebuild the pod with the latest versions.
 ### Autostart with systemd
 
 **Rootless Podman**
