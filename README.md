@@ -6,14 +6,16 @@ It will launch Redis, PostgreSQL, Tika, Gotenberg, SFTPGo and Paperless-ngx insi
 
 If you want to have a VM runs Paperless-ngx, check out my other project which can be used to run everything on [Fedora CoreOS](https://docs.fedoraproject.org/en-US/fedora-coreos/).
 
-https://github.com/quickvm/fcos-layer-paperless-ngx
+<https://github.com/quickvm/fcos-layer-paperless-ngx>
 
 ## Setup
+
 0. Ensure `jq` and `podman` packages are installed (ex `dnf install jq podman`)
 1. Clone this repository
 2. `cd ppngx`
 3. Edit `start.sh` and customize at least these variables:
-  ```
+
+  ```bash
   PAPERLESS_TIME_ZONE=America/Chicago
   PAPERLESS_OCR_LANGUAGE=eng
   SFTPGO_ADMIN_PASSWORD=supersecret
@@ -21,21 +23,28 @@ https://github.com/quickvm/fcos-layer-paperless-ngx
   PAPERLESS_SECRET_KEY=chamgemechamgemechamgemechamgemechamgemechamgemechamgemechamgeme
   POSTGRESQL_PASSWORD=paperlesschangeme
   ```
+
 4. Run `./start.sh`
-5. Wait a bit and make sure http://localhost:8000 is loading paperless.
+5. Wait a bit and make sure <http://localhost:8000> is loading paperless.
 6. Add a superuser to paperless-ngx with:
-  ```
+
+  ```bash
   podman exec -it paperless-webserver python manage.py createsuperuser
   ```
+
 7. If you are going to send documents via SFTP use the `scanner` and password set in `SFTPGO_PAPERLESS_PASSWORD`. Some scanners need the RSA Public key from SFTPGo. It is output by the script and written out to a file `${PWD}/sftp_rsa_host_key.pub`
 
 ### Updating
+
 The most straightforward methodology is to pull the latest image you care about and re-run start.sh. For example:
-  ```
+
+  ```bash
   podman pull ghcr.io/paperless-ngx/paperless-ngx:latest
   ./start.sh
   ```
+
 This will pull the latest image, and assuming your `PAPERLESS_VERSION` specified in start.sh is `latest`, will rebuild the pod with the latest versions.
+
 ### Autostart with systemd
 
 **Rootless Podman**
@@ -77,7 +86,6 @@ Note: If you make changes to `start.sh` after generating the systemd units you w
 1. `systemctl enable --user --now pod-paperless.service`
 
 Or you can edit the systemd unit files directly with your changes and run `systemctl daemon-reload --user` and then run `systemctl restart --user pod-paperless.service`.
-
 
 # License
 
