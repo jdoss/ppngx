@@ -32,7 +32,12 @@ If you want to have a VM runs Paperless-ngx, check out my other project which ca
   podman exec -it paperless-webserver python manage.py createsuperuser
   ```
 
-7. If you are going to send documents via SFTP use the `scanner` and password set in `SFTPGO_PAPERLESS_PASSWORD`. Some scanners need the RSA Public key from SFTPGo. It is output by the script and written out to a file `${PWD}/sftp_rsa_host_key.pub`
+7. If you are going to send documents via SFTP use the `scanner` and password set in `SFTPGO_PAPERLESS_PASSWORD`. Some scanners need the RSA Public key from SFTPGo. It is output by the script and written out to a file `${PWD}/sftp_rsa_host_key.pub`. Also, most scanners are using older versions of OpenSSH so you might need to adjust `SFTPGO_SFTPD__KEX_ALGORITHMS` and `SFTPGO_SFTPD__HOST_KEY_ALGORITHMS` to match the right key algorithms so they can connect as clients to SFTPGo. For example my [Brother ADS2800w](https://www.brother-usa.com/products/ads2800w) need the following set to work with the latest version of SFTPGo (v2.5.4).
+
+  ```bash
+  SFTPGO_SFTPD__KEX_ALGORITHMS=curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha256,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1
+  SFTPGO_SFTPD__HOST_KEY_ALGORITHMS=rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ssh-ed25519,ssh-rsa
+  ```
 
 ### Updating
 
