@@ -9,12 +9,15 @@ PAPERLESS_VERSION=latest
 PAPERLESS_TIME_ZONE=America/Chicago
 PAPERLESS_OCR_LANGUAGE=eng
 
+SFTPGO_VERSION=v2.5.4
 SFTPGO_SFTP_PORT=2022
 SFTPGO_HTTP_PORT=8022
 SFTPGO_ADMIN_USER=sftpadmin
 SFTPGO_ADMIN_PASSWORD=supersecret
 SFTPGO_PAPERLESS_USER=scanner
 SFTPGO_PAPERLESS_PASSWORD=anothersupersecret
+SFTPGO_SFTPD_KEX_ALGORITHMS=curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha256,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1
+SFTPGO_SFTPD_HOST_KEY_ALGORITHMS=rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ssh-ed25519,ssh-rsa
 
 PAPERLESS_SECRET_KEY=chamgemechamgemechamgemechamgemechamgemechamgemechamgemechamgeme
 
@@ -105,11 +108,11 @@ podman create --replace --pod paperless \
   -e SFTPGO_DEFAULT_ADMIN_USERNAME=${SFTPGO_ADMIN_USER} \
   -e SFTPGO_DEFAULT_ADMIN_PASSWORD=${SFTPGO_ADMIN_PASSWORD} \
   -e SFTPGO_HTTPD__BINDINGS__0__PORT=${SFTPGO_HTTP_PORT} \
-  -e SFTPGO_SFTPD__KEX_ALGORITHMS=curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha256,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1 \
-  -e SFTPGO_SFTPD__HOST_KEY_ALGORITHMS=rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ssh-ed25519,ssh-rsa \
+  -e SFTPGO_SFTPD__KEX_ALGORITHMS=${SFTPGO_SFTPD_KEX_ALGORITHMS} \
+  -e SFTPGO_SFTPD__HOST_KEY_ALGORITHMS=${SFTPGO_SFTPD_HOST_KEY_ALGORITHMS} \
   -v paperless-sftpgo:/var/lib/sftpgo:Z \
   -v paperless-consume:/opt/paperless/consume:rw,z \
-  ghcr.io/drakkan/sftpgo:v2.5.4
+  ghcr.io/drakkan/sftpgo:${SFTPGO_VERSION}
 podman start paperless-sftpgo
 
 sleep 5
