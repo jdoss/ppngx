@@ -92,6 +92,12 @@ Note: If you make changes to `start.sh` after generating the systemd units you w
 
 Or you can edit the systemd unit files directly with your changes and run `systemctl daemon-reload --user` and then run `systemctl restart --user pod-paperless.service`.
 
+# Backing up
+
+backup.sh is an example generic backup script that will export the required pod volumes, and store the paperless version number.  You might want to also backup your modified start.sh as well. 
+
+This can either be ran manually as desired or (ideally), as a cron job/whatever. 
+
 # License
 
 MIT License
