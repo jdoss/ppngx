@@ -33,6 +33,7 @@ POSTGRESQL_PASSWORD=paperlesschangeme
 
 echo "Creating Paperless Pod..."
 podman pod create --replace --name paperless \
+  --infra-name paperless-pod \
   -p ${PAPERLESS_PORT}:${PAPERLESS_PORT} \
   -p ${SFTPGO_SFTP_PORT}:${SFTPGO_SFTP_PORT} \
   -p ${SFTPGO_HTTP_PORT}:${SFTPGO_HTTP_PORT}
