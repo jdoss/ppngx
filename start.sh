@@ -31,12 +31,18 @@ POSTGRES_USER=paperless
 POSTGRESQL_DB=paperless
 POSTGRESQL_PASSWORD=paperlesschangeme
 
+SAMBA_SERVER_VERSION=latest
+SAMBA_SERVER_PORT=445
+SMB_USER=scanner
+SMB_PASSWORD=smbsecret
+
 echo "Creating Paperless Pod..."
 podman pod create --replace --name paperless \
   --infra-name paperless-pod \
   -p ${PAPERLESS_PORT}:${PAPERLESS_PORT} \
   -p ${SFTPGO_SFTP_PORT}:${SFTPGO_SFTP_PORT} \
-  -p ${SFTPGO_HTTP_PORT}:${SFTPGO_HTTP_PORT}
+  -p ${SFTPGO_HTTP_PORT}:${SFTPGO_HTTP_PORT} \
+  -p ${SMB_PORT}:${SMB_PORT}
 
 echo "Starting Redis..."
 podman volume create paperless-redis 2> /dev/null ||:
@@ -102,6 +108,59 @@ podman create --replace --pod paperless \
   -v ${PWD}/export:/usr/src/paperless/export:U,Z \
   ghcr.io/paperless-ngx/paperless-ngx:${PAPERLESS_VERSION}
 podman start paperless-webserver
+
+jq -n --arg usr "$SMB_USER" --arg passwd "$SMB_PASSWORD" '{
+  "samba-container-config": "v0",
+  "configs": {
+    "paperless": {
+      "shares": ["share"],
+      "globals": ["default"],
+      "instance_name": "paperless-samba"
+    }
+  },
+  "shares": {
+    "share": {
+      "options": {
+        "path": "/share",
+	"read only": "no",
+        "valid users": $usr
+      }
+    }
+  },
+  "globals": {
+    "default": {
+      "options": {
+        "security": "user",
+        "server min protocol": "NT1",
+        "load printers": "no",
+        "printing": "bsd",
+        "printcap name": "/dev/null",
+        "disable spoolss": "yes",
+        "guest ok": "no"
+      }
+    }
+  },
+  "users": {
+    "all_entries": [
+      {
+        "name": $usr,
+        "password": $passwd
+      }
+    ]
+  },
+  "_footer": 1
+}' | podman secret create --replace samba-config -
+
+echo "Starting Samba Server..."
+podman create --replace --pod paperless \
+  --name paperless-samba \
+  --restart=unless-stopped \
+  --secret samba-config \
+  -v paperless-consume:/share:rw,z \
+  -e SAMBACC_CONFIG=/run/secrets/samba-config \
+  -e SAMBA_CONTAINER_ID=paperless \
+  quay.io/samba.org/samba-server:${SAMBA_SERVER_VERSION}
+podman start paperless-samba
 
 echo "Starting SFTPGo..."
 podman create --replace --pod paperless \
