@@ -42,7 +42,7 @@ podman pod create --replace --name paperless \
   -p ${PAPERLESS_PORT}:${PAPERLESS_PORT} \
   -p ${SFTPGO_SFTP_PORT}:${SFTPGO_SFTP_PORT} \
   -p ${SFTPGO_HTTP_PORT}:${SFTPGO_HTTP_PORT} \
-  -p ${SMB_PORT}:${SMB_PORT}
+  -p ${SAMBA_SERVER_PORT}:${SAMBA_SERVER_PORT}
 
 echo "Starting Redis..."
 podman volume create paperless-redis 2> /dev/null ||:
